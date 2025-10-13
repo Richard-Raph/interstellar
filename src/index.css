@@ -7,5 +7,5 @@ body {
 }
 
 body.dark {
-    @apply bg-gray-900 text-gray-100;
+    @apply bg-gray-950 text-gray-100;
 }
