@@ -1,66 +1,64 @@
-import Card from "../components/Card";
-import Error from "../components/Error";
-import Toolbar from "../components/Toolbar";
-import Skeleton from "../components/Skeleton";
-import { type Country } from "../types/country";
-import Pagination from "../components/Pagination";
+import { useState, useEffect } from "react";
+import type { Country } from "../types/country";
 import { useCountries } from "../hooks/useCountries";
-import { useState, useEffect, useCallback } from "react";
+import { Card, Error, Toolbar, Skeleton, Pagination } from "../components";
 
 const PAGE_SIZE = 20;
 
 export default function Dashboard() {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentSearch, setCurrentSearch] = useState('');
-  const { refetch, isError, isLoading, data: countries } = useCountries();
-  const [filteredCountries, setFilteredCountries] = useState<Country[]>([]);
-
-  const handleFilter = useCallback((filtered: Country[], search: string) => {
-    setFilteredCountries(filtered);
-    setCurrentPage(1);
-    setCurrentSearch(search);
-  }, []);
+  const [page, setPage] = useState(1);
+  const [query, setQuery] = useState("");
+  const [ready, setReady] = useState(false);
+  const [filtered, setFiltered] = useState<Country[]>([]);
+  const { data, refetch, isError, isLoading } = useCountries();
 
   useEffect(() => {
-    if (countries && countries.length > 0) {
-      handleFilter(countries, '');
+    if (data && !isLoading) {
+      setFiltered(data);
+      setReady(true);
     }
-  }, [countries, handleFilter]);
+  }, [data, isLoading]);
 
   if (isError) return <Error type="network" onRetry={refetch} />;
-
-  if (isLoading || !countries)
+  if (!ready || isLoading) {
     return (
       <section className="grid gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 flex-1 content-center">
-        {Array.from({ length: 8 }).map((_, idx) => (
-          <Skeleton key={idx} />
+        {Array.from({ length: 8 }).map((_, index) => (
+          <Skeleton key={index} />
         ))}
       </section>
     );
+  }
 
-  const startIndex = (currentPage - 1) * PAGE_SIZE;
-  const totalFilteredCountries = filteredCountries.length;
-  const paginatedCountries = filteredCountries.slice(startIndex, startIndex + PAGE_SIZE);
+  const handleFilter = (list: Country[], query: string) => {
+    setFiltered(list);
+    setQuery(query);
+    setPage(1);
+  };
+
+  const total = filtered.length;
+  const start = (page - 1) * PAGE_SIZE;
+  const pageData = filtered.slice(start, start + PAGE_SIZE);
 
   return (
     <>
-      <Toolbar countries={countries} onFilter={handleFilter} />
-
-      {totalFilteredCountries > 0 ? (
-        <section className="grid gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-          {paginatedCountries.map((country) => (
-            <Card key={country.cca2} country={country} />
-          ))}
-        </section>
-      ) : <Error type="results" query={currentSearch} />}
-
-      {totalFilteredCountries > 0 && (
-        <Pagination
-          pageSize={PAGE_SIZE}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-          totalItems={totalFilteredCountries}
-        />
+      <Toolbar countries={data!} onFilter={handleFilter} />
+      {total ? (
+        <>
+          <section className="grid gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+            {pageData.map((c) => (
+              <Card key={c.cca2} country={c} />
+            ))}
+          </section>
+          <Pagination
+            totalItems={total}
+            currentPage={page}
+            pageSize={PAGE_SIZE}
+            onPageChange={setPage}
+          />
+        </>
+      ) : (
+        <Error type="results" query={query} />
       )}
     </>
   );

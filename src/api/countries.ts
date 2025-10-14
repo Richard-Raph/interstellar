@@ -3,9 +3,8 @@ import { type Country } from "../types/country";
 
 const BASE_URL = "https://restcountries.com/v3.1";
 
-const REQUIRED_FIELDS = "name,population,region,capital,flags,cca2,subregion,currencies,languages,borders";
+const REQUIRED_FIELDS = "cca2,name,flags,region,borders,capital,languages,subregion,currencies,population";
 
-// Clean alphabetical sorting, case-insensitive
 function sortCountriesAlphabetically(countries: Country[]): Country[] {
   return countries.sort((a, b) =>
     a.name.common.localeCompare(b.name.common, "en", { sensitivity: "base" })
