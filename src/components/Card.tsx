@@ -58,7 +58,7 @@ export default function Card({ country }: CardProps) {
           {renderDetail("Region", country.region)}
           {renderDetail("Capital", country.capital?.[0] || "N/A")}
           {renderDetail("Population", country.population.toLocaleString())}
-          {renderDetail("Code", country.cca3)}
+          {renderDetail("Code", country.cca2)}
         </div>
         <div className="w-1/3 h-1 bg-indigo-400 dark:bg-indigo-500 rounded-full mx-auto" />
       </motion.div>

@@ -13,7 +13,7 @@ export default function Layout() {
     return (
         <>
             <Navbar darkMode={darkMode} toggleDark={() => setDarkMode(!darkMode)} />
-            <main className="grid p-8 md:p-16 min-h-[calc(100dvh-80px)]">
+            <main className="flex flex-col gap-14 px-8 py-6 md:px-16 md:py-10 min-h-[calc(100dvh-80px)]">
                 <Outlet />
             </main>
         </>

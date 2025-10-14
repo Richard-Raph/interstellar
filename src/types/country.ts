@@ -1,5 +1,5 @@
 export interface Country {
-  cca3: string;
+  cca2: string;
   tld?: string[];
   region: string;
   borders?: string[];
