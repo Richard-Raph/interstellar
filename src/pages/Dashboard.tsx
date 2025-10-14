@@ -33,7 +33,7 @@ export default function Dashboard() {
   const handleFilter = (list: Country[], query: string) => {
     setFiltered(list);
     setQuery(query);
-    setPage(1);
+    setPage((prev) => (prev > Math.ceil(list.length / PAGE_SIZE) ? 1 : prev));
   };
 
   const total = filtered.length;
