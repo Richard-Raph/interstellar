@@ -27,7 +27,9 @@ export default function Dashboard() {
     }
   }, [countries, handleFilter]);
 
-  if (isLoading)
+  if (isError) return <Error type="network" onRetry={refetch} />;
+
+  if (isLoading || !countries)
     return (
       <section className="grid gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 flex-1 content-center">
         {Array.from({ length: 8 }).map((_, idx) => (
@@ -35,10 +37,6 @@ export default function Dashboard() {
         ))}
       </section>
     );
-
-  if (isError) return <Error type="network" onRetry={refetch} />;
-
-  if (!countries || countries.length === 0) return <Error type="results" />;
 
   const startIndex = (currentPage - 1) * PAGE_SIZE;
   const totalFilteredCountries = filteredCountries.length;

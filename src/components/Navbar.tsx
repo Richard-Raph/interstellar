@@ -16,15 +16,18 @@ export default function Navbar({ darkMode, toggleDark }: Props) {
     };
 
     return (
-        <header className="sticky z-50 top-0 flex items-center justify-between bg-white dark:bg-gray-900 shadow-md p-6 md:px-16">
-            <h1 className="text-xl font-semibold">The Interstellar Atlas</h1>
+        <header className="sticky h-20 z-50 top-0 flex items-center justify-between bg-white dark:bg-gray-900 shadow-md p-6 md:px-16">
+            <h1 className="text-2xl md:text-3xl font-serif font-extrabold tracking-tight 
+            italic leading-none text-transparent bg-gradient-to-r from-indigo-700 to-purple-800
+            bg-clip-text text-shadow-light dark:from-indigo-400 dark:to-pink-300 dark:text-shadow-dark">
+                The Interstellar Atlas
+            </h1>
 
             <button
                 onClick={handleClick}
-                className={`relative flex items-center w-16 h-8 rounded-full transition-all duration-500 
-                    ${darkMode ? "bg-gray-700" : "bg-indigo-400"}
-                    ${clicked ? "scale-95" : "scale-100"}
-                    focus:outline-none`}
+                className={`relative flex items-center w-16 h-8 rounded-full 
+                    duration-500 ${darkMode ? "bg-gray-700" : "bg-indigo-400"}
+                    transition-all ${clicked ? "scale-95" : "scale-100"} focus:outline-none`}
             >
                 <div className={`
                     absolute top-1 left-1 flex items-center justify-center rounded-full bg-white dark:bg-gray-800 

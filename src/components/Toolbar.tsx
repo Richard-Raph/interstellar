@@ -22,15 +22,19 @@ export default function Toolbar({ countries, onFilter }: {
         onFilter(filtered, search);
     }, [search, region, countries, onFilter]);
 
-    const infoText = search && !count ? `NO DATA MATCHES: ${search.toUpperCase()}`
-        : search ? `QUERY MATCH: ${count} item${count !== 1 ? "s" : ""}.` : region ?
-            `REGION: ${region.toUpperCase()} - ${count} COUNTRIES.` : `GLOBAL DATASET: ${count} RECORDS ONLINE.`;
+    const infoText =
+        !count && search
+            ? `NO DATA MATCHES: ${search.toUpperCase()}${region ? ` in ${region.toUpperCase()}` : ""}.`
+            : search
+                ? `QUERY MATCH: ${count} item${count !== 1 ? "s" : ""}${region ? ` in ${region.toUpperCase()}` : " globally"}.`
+                : region
+                    ? `REGION: ${region.toUpperCase()} - ${count} COUNTRIES.` : `GLOBAL DATASET: ${count} RECORDS ONLINE.`;
 
     const bgText = "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100";
     const baseBorder = "border border-gray-300 dark:border-gray-700 hover:border-indigo-500 transition-colors";
 
     return (
-        <header className={`flex flex-col gap-6 p-4 rounded-xl shadow-lg ${bgText} ${baseBorder}`}>
+        <section className={`flex flex-col gap-6 p-4 rounded-xl shadow-lg ${bgText} ${baseBorder}`}>
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="relative w-full sm:max-w-md">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-600 dark:text-indigo-400" />
@@ -75,10 +79,10 @@ export default function Toolbar({ countries, onFilter }: {
                 </div>
             </div>
 
-            <p className={`text-sm font-mono tracking-wide text-center sm:text-left pt-2 border-t 
+            <p className={`text-sm font-mono tracking-wide text-center sm:text-left pt-2 border-t dark:border-t-current
                 ${count ? "text-indigo-600 dark:text-indigo-400" : "text-red-600 dark:text-red-500 animate-pulse"}`}>
                 &gt; STATUS: {infoText}
             </p>
-        </header>
+        </section>
     );
 }
