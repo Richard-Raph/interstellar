@@ -9,7 +9,7 @@ function App() {
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<Dashboard />} />
-        <Route path="/country" element={<CountryInfo />} />
+        <Route path="/country/:code" element={<CountryInfo />} />
       </Route>
     </Routes>
   );

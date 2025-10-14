@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import type { Country } from "../types/country";
 import { useCountries } from "../hooks/useCountries";
-import { Card, Error, Toolbar, Skeleton, Pagination } from "../components";
+import { Card, About, Error, Toolbar, Skeleton, Pagination } from "../components";
 
 const PAGE_SIZE = 20;
 
@@ -9,6 +9,7 @@ export default function Dashboard() {
   const [page, setPage] = useState(1);
   const [query, setQuery] = useState("");
   const [ready, setReady] = useState(false);
+  const [showAbout, setShowAbout] = useState(false);
   const [filtered, setFiltered] = useState<Country[]>([]);
   const { data, refetch, isError, isLoading } = useCountries();
 
@@ -16,6 +17,7 @@ export default function Dashboard() {
     if (data && !isLoading) {
       setFiltered(data);
       setReady(true);
+      setShowAbout(true);
     }
   }, [data, isLoading]);
 
@@ -42,6 +44,7 @@ export default function Dashboard() {
 
   return (
     <>
+      {showAbout && <About onClose={() => setShowAbout(false)} />}
       <Toolbar countries={data!} onFilter={handleFilter} />
       {total ? (
         <>

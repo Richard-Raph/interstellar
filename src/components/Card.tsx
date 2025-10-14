@@ -1,4 +1,5 @@
-import { type Country } from "../types/country";
+import { useNavigate } from "react-router-dom";
+import type { Country } from "../types/country";
 import { motion, type Transition } from "framer-motion";
 
 interface CardProps {
@@ -11,6 +12,8 @@ const fastTransition: Transition = {
 };
 
 export default function Card({ country }: CardProps) {
+  const navigate = useNavigate();
+
   const renderDetail = (label: string, value: string | number) => (
     <div key={label}>
       <p className="font-medium text-xs tracking-wider uppercase text-indigo-500 dark:text-indigo-400">
@@ -26,6 +29,7 @@ export default function Card({ country }: CardProps) {
     <motion.div
       transition={fastTransition}
       whileHover={{ scale: 1.03, rotate: -0.5 }}
+      onClick={() => navigate(`/country/${country.cca2}`)}
       className="relative w-full p-0.5 rounded-2xl overflow-hidden 
       cursor-pointer bg-gray-100 dark:bg-gray-800 shadow-lg transition-shadow"
     >
@@ -43,9 +47,9 @@ export default function Card({ country }: CardProps) {
       >
         <div className="flex items-center space-x-4">
           <motion.img
+            alt={country.flags.alt}
             src={country.flags.png}
             transition={fastTransition}
-            alt={`${country.name.common} flag`}
             whileHover={{ rotate: 5, scale: 1.1 }}
             className="w-16 h-12 object-cover rounded-md shadow-lg"
           />

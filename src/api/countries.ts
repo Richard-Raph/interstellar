@@ -1,5 +1,5 @@
 import axios from "axios";
-import { type Country } from "../types/country";
+import type { Country, ResolvedBorder } from '../types/country';
 
 const BASE_URL = "https://restcountries.com/v3.1";
 
@@ -32,4 +32,23 @@ export async function getCountryByName(name: string): Promise<Country[]> {
 export async function getCountryByCode(code: string): Promise<Country> {
   const { data } = await axios.get<Country[]>(`${BASE_URL}/alpha/${code}`);
   return data[0];
+}
+
+export async function getBordersByCodes(codes: string[]): Promise<ResolvedBorder[]> {
+  if (codes.length === 0) return [];
+
+  const codeList = codes.join(',');
+  const url = `${BASE_URL}/alpha?codes=${codeList}&fields=cca2,name`;
+
+  try {
+    const { data } = await axios.get<Country[]>(url);
+
+    return data.map(country => ({
+      name: country.name.common,
+      code: country.cca2,
+    }));
+  } catch (error) {
+    console.error("Failed to fetch border country names:", error);
+    return [];
+  }
 }

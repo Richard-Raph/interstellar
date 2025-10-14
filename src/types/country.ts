@@ -14,3 +14,8 @@ export interface Country {
     nativeName?: Record<string, { common: string; official: string }>;
   };
 }
+
+export interface ResolvedBorder {
+  name: string;
+  code: string;
+}

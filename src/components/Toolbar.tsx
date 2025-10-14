@@ -15,7 +15,6 @@ export default function Toolbar({ countries, onFilter }: ToolbarProps) {
     const [region, setRegion] = useState("");
     const [count, setCount] = useState(countries.length);
 
-    // filter logic
     useEffect(() => {
         const filtered = countries.filter(
             (c) =>
@@ -35,11 +34,12 @@ export default function Toolbar({ countries, onFilter }: ToolbarProps) {
                 : `GLOBAL DATASET: ${count} RECORDS ONLINE.`;
 
     const bgText = "bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100";
-    const baseBorder = "border border-gray-300 dark:border-gray-700 hover:border-indigo-500 transition-colors";
+    const baseBorder = `border border-gray-300 dark:border-gray-700 
+        hover:border-indigo-500 dark:hover:border-indigo-400 focus:outline-none
+        focus:border-indigo-500 dark:focus:border-indigo-500 transition-colors`;
 
     return (
         <section className={`flex flex-col gap-6 p-4 rounded-xl shadow-lg ${bgText} ${baseBorder}`}>
-            {/* Search Input */}
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="relative w-full sm:max-w-md">
                     <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-indigo-600 dark:text-indigo-400" />
@@ -47,11 +47,10 @@ export default function Toolbar({ countries, onFilter }: ToolbarProps) {
                         value={search}
                         placeholder="SEARCH DATA BANK..."
                         onChange={(e) => setSearch(e.target.value)}
-                        className={`w-full pl-12 pr-4 py-3 rounded-xl font-mono text-sm shadow-md ${bgText} ${baseBorder} focus:outline-none focus:border-indigo-500`}
+                        className={`w-full pl-12 pr-4 py-3 rounded-xl font-mono text-sm shadow-md ${bgText} ${baseBorder}`}
                     />
                 </div>
 
-                {/* Region Filter */}
                 <div className="relative w-full sm:w-64 inline-block">
                     <button
                         onClick={() => setOpen(!open)}
@@ -62,7 +61,7 @@ export default function Toolbar({ countries, onFilter }: ToolbarProps) {
                     </button>
 
                     {open && (
-                        <div className={`absolute top-full p-2 mt-2 w-full rounded-xl shadow-xl z-20 ${bgText} border border-indigo-500`}>
+                        <div className={`absolute top-full p-2 mt-2 w-full rounded-xl shadow-xl z-20 ${bgText} border border-indigo-500 ring-1 ring-indigo-400`}>
                             <div className="max-h-60 overflow-y-auto space-y-1">
                                 {[{ label: "All Regions", val: "" }, ...REGIONS.map((r) => ({ label: r, val: r }))].map(({ label, val }) => {
                                     const active = region === val;
@@ -86,7 +85,6 @@ export default function Toolbar({ countries, onFilter }: ToolbarProps) {
                 </div>
             </div>
 
-            {/* Status Info */}
             <p className={`text-sm font-mono tracking-wide text-center sm:text-left pt-2 border-t dark:border-t-current ${count ? "text-indigo-600 dark:text-indigo-400" : "text-red-600 dark:text-red-500 animate-pulse"}`}>
                 &gt; STATUS: {infoText}
             </p>
