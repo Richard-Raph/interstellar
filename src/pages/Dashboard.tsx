@@ -14,20 +14,18 @@ export default function Dashboard() {
   const { data, refetch, isError, isLoading } = useCountries();
 
   useEffect(() => {
-    if (data && !isLoading) {
+    if (data && !isLoading && !ready) {
       setFiltered(data);
       setReady(true);
       setShowAbout(true);
     }
-  }, [data, isLoading]);
+  }, [data, isLoading, ready]);
 
   if (isError) return <Error type="network" onRetry={refetch} />;
-  if (!ready || isLoading) {
+  if (!ready) {
     return (
       <section className="grid gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 flex-1 content-center">
-        {Array.from({ length: 8 }).map((_, index) => (
-          <Skeleton key={index} />
-        ))}
+        {Array.from({ length: 8 }).map((_, index) => <Skeleton key={index} />)}
       </section>
     );
   }
@@ -49,20 +47,11 @@ export default function Dashboard() {
       {total ? (
         <>
           <section className="grid gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {pageData.map((c) => (
-              <Card key={c.cca2} country={c} />
-            ))}
+            {pageData.map((country) => <Card key={country.cca2} country={country} />)}
           </section>
-          <Pagination
-            totalItems={total}
-            currentPage={page}
-            pageSize={PAGE_SIZE}
-            onPageChange={setPage}
-          />
+          <Pagination totalItems={total} currentPage={page} pageSize={PAGE_SIZE} onPageChange={setPage} />
         </>
-      ) : (
-        <Error type="results" query={query} />
-      )}
+      ) : <Error type="results" query={query} />}
     </>
   );
 }

@@ -1,11 +1,12 @@
+import { Error } from '../components';
 import type { ResolvedBorder } from '../types/country';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useCountryInfo, type CountryDetail } from '../hooks/useCountryInfo';
 import { ChevronLeft, Globe, Map, MessageSquare, Briefcase } from 'lucide-react';
 
 export default function CountryInfo() {
-    const { code } = useParams<{ code: string }>();
     const navigate = useNavigate();
+    const { code } = useParams<{ code: string }>();
 
     // Use the custom hook to fetch and resolve data
     const { country, isLoading, isError } = useCountryInfo(code);
@@ -79,20 +80,7 @@ export default function CountryInfo() {
         );
     }
     
-    if (isError || !country) {
-        return (
-            <div className="text-center py-20 text-red-500 dark:text-red-400">
-                <p className="text-2xl font-mono mb-4">&gt; FATAL ERROR: CONNECTION LOST</p>
-                <p>Failed to retrieve data for code **{code}**. The specified stellar coordinates returned no data.</p>
-                <button 
-                    onClick={() => navigate('/')} 
-                    className="mt-6 px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition"
-                >
-                    Return to Data Log
-                </button>
-            </div>
-        );
-    }
+    if (isError || !country) return <Error type="network" />;
 
     // --- Main Render (Data is available) ---
     return (

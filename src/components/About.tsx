@@ -1,68 +1,93 @@
 import { useState, useEffect } from "react";
-import { Mail, Twitter, LucideGithub } from "lucide-react";
+import { motion, type Variants } from "framer-motion";
+import { X, Book, Mail, Github, Monitor, Linkedin, Smartphone } from "lucide-react";
 
-interface AboutProps {
-    onClose?: () => void; // optional, because you might not always pass it
-}
+interface AboutProps { onClose?: () => void; }
+
+const CARD_DURATION = 0.3;
+
+const cardVariants: Variants = {
+    hidden: { opacity: 0, scale: 0.95 },
+    visible: {
+        scale: 1,
+        opacity: 1,
+        transition: {
+            duration: 0.5,
+            ease: "easeOut",
+            staggerChildren: 0.1,
+            when: "beforeChildren",
+        }
+    },
+    exit: { opacity: 0, scale: 0.95, transition: { duration: CARD_DURATION, ease: "easeIn" } }
+};
+
+const childVariants: Variants = {
+    hidden: { opacity: 0, y: 10 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } }
+};
+
+const InfoLine = ({ icon: Icon, text, color = "text-indigo-500" }: { icon: React.ElementType, text: string, color?: string }) => (
+    <motion.div variants={childVariants} className="flex items-center gap-3 py-1.5 max-w-[280px]">
+        <Icon className={`w-5 h-5 ${color} shrink-0`} />
+        <span className="font-mono text-sm text-gray-800 dark:text-gray-300 text-center whitespace-pre-wrap flex-1">{text}</span>
+    </motion.div>
+);
 
 export default function About({ onClose }: AboutProps) {
     const [visible, setVisible] = useState(false);
 
-    useEffect(() => {
-        const hasVisited = sessionStorage.getItem("hasVisited");
-        if (!hasVisited) {
-            setVisible(true);
-            sessionStorage.setItem("hasVisited", "true");
-        }
-    }, []);
+    useEffect(() => setVisible(true), []);
 
     const handleClose = () => {
         setVisible(false);
-        onClose?.(); // call parent callback if provided
+        setTimeout(() => onClose?.(), CARD_DURATION * 1000);
     };
 
-    if (!visible) return null;
-
     return (
-        <div className="fixed inset-0 flex items-center justify-center bg-black/50 backdrop-blur-sm z-50">
-            <div className="bg-white dark:bg-gray-900 rounded-2xl shadow-2xl p-6 max-w-sm w-full text-center relative">
-                <button
+        <motion.div
+            exit="exit"
+            initial="hidden"
+            variants={cardVariants}
+            animate={visible ? "visible" : "exit"}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 dark:bg-black/70 backdrop-blur-sm p-4"
+        >
+            <div className="relative w-full max-w-sm p-10 bg-white dark:bg-gray-800 rounded-xl shadow-2xl border border-gray-200 dark:border-gray-700 text-center">
+
+                <motion.button
+                    aria-label="Close"
                     onClick={handleClose}
-                    className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
+                    variants={childVariants}
+                    className="absolute top-3 right-3 text-gray-500 hover:text-red-500 transition-all"
                 >
-                    ✕
-                </button>
-                <h2 className="text-xl font-semibold mb-2 text-gray-800 dark:text-gray-200">
-                    Built with ❤️ by Richard
-                </h2>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                    Web developer, UI tinkerer, caffeine enthusiast.
-                </p>
-                <div className="flex justify-center gap-4">
-                    <a
-                        href="https://github.com/your-handle"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-gray-800 dark:text-gray-200 hover:text-indigo-600 dark:hover:text-indigo-400"
-                    >
-                        <LucideGithub className="w-6 h-6" />
-                    </a>
-                    <a
-                        href="https://twitter.com/your-handle"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-500 hover:text-blue-600"
-                    >
-                        <Twitter className="w-6 h-6" />
-                    </a>
-                    <a
-                        href="mailto:you@example.com"
-                        className="text-red-500 hover:text-red-600"
-                    >
-                        <Mail className="w-6 h-6" />
-                    </a>
+                    <X className="w-5 h-5" />
+                </motion.button>
+
+                <motion.h1 variants={childVariants} className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6">
+                    RICHARD RAPHAEL
+                </motion.h1>
+
+                <div className="flex flex-col gap-2 mb-6">
+                    <InfoLine icon={Monitor} text={"WEB DEVELOPER\n(FRONTEND/BACKEND)"} color="text-indigo-600 dark:text-indigo-400" />
+                    <InfoLine icon={Smartphone} text={"APP DEVELOPER\n(REACT NATIVE)"} color="text-green-600 dark:text-green-400" />
+                    <InfoLine icon={Book} text={"INSTRUCTOR/MENTOR\n(WEB DEVELOPMENT)"} color="text-yellow-600 dark:text-yellow-400" />
+                </div>
+
+                <motion.h2 variants={childVariants} className="text-xl font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-widest mb-4 border-b border-indigo-300 dark:border-indigo-500 pb-2">
+                    GET IN TOUCH
+                </motion.h2>
+
+                <div className="flex justify-center gap-10">
+                    <motion.a variants={childVariants} href="https://github.com/Richard-Raph" target="_blank" rel="noopener noreferrer" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-transform hover:scale-110">
+                        <Github className="w-8 h-8" />
+                    </motion.a>
+                    <motion.a variants={childVariants} href="https://www.linkedin.com/in/rich-tech123" target="_blank" rel="noopener noreferrer" className="text-blue-700 hover:text-blue-600 transition-transform hover:scale-110">
+                        <Linkedin className="w-8 h-8" />
+                    </motion.a>
+                    <motion.a variants={childVariants} href="mailto:arm.techtonic@gmail.com" className="text-red-500 hover:text-red-600 transition-transform hover:scale-110">
+                        <Mail className="w-8 h-8" />
+                    </motion.a>
                 </div>
             </div>
-        </div>
+        </motion.div>
     );
 }
