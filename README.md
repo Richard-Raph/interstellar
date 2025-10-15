@@ -7,6 +7,11 @@ Users can browse countries, filter by region, search by name, view detailed info
 
 ---
 
+## 🌐 View Live Site  
+👉 [**interstellar-atlas.netlify.app**](https://interstellar-atlas.netlify.app/)
+
+---
+
 ## 🚀 Features
 
 ### **Main Dashboard**
@@ -118,7 +123,7 @@ Only required fields are fetched to optimize performance.
 ## 🧑‍💻 Author
 
 **Richard Raphael**  
-Frontend & Backend Developer | Web Dev Instructor | App Developer  
+Frontend & Backend Developer | Web Development Instructor | App Developer  
 📧 arm.techtonic@gmail.com  
 🔗 [GitHub](https://github.com/Richard-Raph)  
 🔗 [LinkedIn](https://www.linkedin.com/in/rich-tech123)
