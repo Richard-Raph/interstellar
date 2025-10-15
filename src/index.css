@@ -9,3 +9,21 @@ body {
 body.dark {
     @apply bg-gray-950 text-gray-100;
 }
+
+.animate-pulse-subtle {
+    animation: pulse-subtle 4s ease-in-out infinite;
+}
+
+@keyframes pulse-subtle {
+
+    0%,
+    100% {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    50% {
+        opacity: 0.9;
+        transform: scale(1.02);
+    }
+}

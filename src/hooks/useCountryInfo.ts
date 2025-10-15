@@ -1,17 +1,12 @@
-// src/hooks/useCountryInfo.ts
+// src/hooks/useCountryInfo.ts (No changes needed)
 
 import { useState, useEffect, useCallback } from 'react';
-import type { Country, ResolvedBorder } from '../types/country'; 
-import { getCountryByCode, getBordersByCodes } from '../api/countries'; 
+import type { Country, ResolvedBorder } from '../types/country';
+import { getCountryByCode, getBordersByCodes } from '../api/countries';
 
 // --- Interface for the Hook's Return Value (Country Detail) ---
-/**
- * CORRECTED: We use Omit<Country, 'borders'> to remove the original 
- * 'borders?: string[]' property first, and then manually define it 
- * with the new 'ResolvedBorder[]' type.
- */
 export interface CountryDetail extends Omit<Country, 'borders'> {
-    borders: ResolvedBorder[]; // ✅ Now correctly defined as ResolvedBorder[]
+    borders: ResolvedBorder[];
 }
 
 // Simple in-memory cache for country details
@@ -23,8 +18,13 @@ export function useCountryInfo(code: string | undefined) {
     const [isLoading, setIsLoading] = useState(true);
     const [isError, setIsError] = useState(false);
 
+    // ✅ Keep fetchAttempt to trigger re-fetch, but don't return/use the constant value
+    const [fetchAttempt, setFetchAttempt] = useState(0);
+
     const fetchCountryData = useCallback(async (countryCode: string) => {
-        setIsLoading(true);
+        if (!countryCache[countryCode]) {
+            setIsLoading(true);
+        }
         setIsError(false);
 
         // 1. Check Cache
@@ -36,30 +36,27 @@ export function useCountryInfo(code: string | undefined) {
 
         try {
             // 2. Fetch Primary Country Data
-            // We cast mainCountry to ensure TypeScript knows we will resolve the borders later.
-            const mainCountry = await getCountryByCode(countryCode);
+            const mainCountry: Country = await getCountryByCode(countryCode);
 
-            // 3. Resolve Border Country Names using the imported utility function
-            // We use the 'borders' property from the base Country type here: string[]
+            // 3. Resolve Border Country Names
             const borderCodes = mainCountry.borders || [];
             let resolvedBorders: ResolvedBorder[] = [];
 
             if (borderCodes.length > 0) {
-                resolvedBorders = await getBordersByCodes(borderCodes); 
+                resolvedBorders = await getBordersByCodes(borderCodes);
             }
 
             // 4. Combine and Cache
             const detailData: CountryDetail = {
                 ...mainCountry,
-                // Assign the resolved array to the new 'borders' property
-                borders: resolvedBorders, 
-            } as CountryDetail; // Final cast to satisfy the assignment to CountryDetail
+                borders: resolvedBorders,
+            };
 
             countryCache[countryCode] = detailData;
             setCountry(detailData);
 
         } catch (err) {
-            console.error("Fetching country detail failed:", err);
+            console.error(`Fetching country detail for ${countryCode} failed:`, err);
             setIsError(true);
             setCountry(null);
         } finally {
@@ -67,14 +64,29 @@ export function useCountryInfo(code: string | undefined) {
         }
     }, []);
 
+    const refetch = useCallback(() => {
+        // ✅ Incrementing this state value invalidates the cache for the current country
+        // and triggers the useEffect to call fetchCountryData.
+        setFetchAttempt(prev => prev + 1);
+        if (code && countryCache[code]) {
+            delete countryCache[code];
+        }
+    }, [code]);
+
     useEffect(() => {
         if (code) {
+            // Include fetchAttempt here to trigger a re-fetch when refetch() is called
             fetchCountryData(code);
         } else {
             setIsError(true);
             setIsLoading(false);
         }
-    }, [code, fetchCountryData]);
+    }, [code, fetchCountryData, fetchAttempt]); // ✅ FIX: Added fetchAttempt to dependency array
 
-    return { country, isLoading, isError };
+    return {
+        refetch,
+        country,
+        isError,
+        isLoading,
+    };
 }

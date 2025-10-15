@@ -25,7 +25,7 @@ export default function Dashboard() {
   if (!ready) {
     return (
       <section className="grid gap-12 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 flex-1 content-center">
-        {Array.from({ length: 8 }).map((_, index) => <Skeleton key={index} />)}
+        {Array.from({ length: 8 }).map((_, index) => <Skeleton key={index} type="card" />)}
       </section>
     );
   }
