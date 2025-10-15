@@ -1,73 +1,124 @@
-# React + TypeScript + Vite
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# 🌍 The Interstellar Atlas
 
-Currently, two official plugins are available:
+A responsive, single-page React application that lets users explore data about countries and their neighbors through the [REST Countries API](https://restcountries.com/v3.1/).  
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+Users can browse countries, filter by region, search by name, view detailed information, and explore each country's location on a live map.
 
-## React Compiler
+---
 
-The React Compiler is currently not compatible with SWC. See [this issue](https://github.com/vitejs/vite-plugin-react/issues/428) for tracking the progress.
+## 🚀 Features
 
-## Expanding the ESLint configuration
+### **Main Dashboard**
+- Displays all countries (flag, name, population, and region).  
+- Client-side pagination to improve performance.  
+- Region filter and text-based search that can be combined.  
+- Smooth transitions and animations with **Framer Motion**.  
+- Dark/light mode with persistent theme preference.  
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### **Country Detail View**
+- Shows detailed info including:
+  - Native Name  
+  - Sub-Region  
+  - Capital  
+  - Top Level Domain  
+  - Currencies  
+  - Languages  
+- Displays **border countries** as clickable badges that navigate to their detail pages.  
+- Integrates an **interactive map** (via Leaflet) with expandable view.  
+- Handles API errors gracefully with clear visual feedback.  
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### **UX Enhancements**
+- Animated loading skeletons and transition effects.  
+- Responsive and mobile-friendly layout.  
+- Elegant error states for both connection loss and empty search results.  
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+---
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🧠 Technical Overview
+
+### **Tech Stack**
+- **React (Vite)** – Core SPA framework.  
+- **TypeScript** – Strong typing and better DX.  
+- **Tailwind CSS** – Utility-first responsive styling.  
+- **Framer Motion** – Animation and transition effects.  
+- **Axios** – Simplified API fetching and error handling.  
+- **React Router DOM** – Client-side routing between dashboard and details pages.  
+- **React-Leaflet + Leaflet** – Interactive mapping with dynamic markers.  
+
+### **State Management**
+Lightweight state handled using React hooks (`useState`, `useEffect`, and `useReducer` where necessary).  
+Data caching for previously fetched country details is implemented to minimize redundant API calls.
+
+### **Architecture**
+- `api/countries.ts`: Handles all REST Countries API requests (list, search, details, borders).  
+- `components/`: Modular UI (Card, Hero, Map, Metrics, Toolbar, etc.).  
+- `hooks/useCountries.ts`: Centralized logic for fetching and caching all country data.  
+- `hooks/useCountryInfo.ts`: Centralized logic for fetching and caching single-country data.  
+- `types/`: Central TypeScript interfaces for API responses.  
+
+---
+
+## 🧩 Bonus Features Implemented
+✅ **Interactive Map Integration** using **React-Leaflet**  
+✅ **Data Persistence** (re-fetch on refresh without breaking)  
+✅ **Client-side Caching** (reuses fetched country data)  
+✅ **Dark Mode** toggle with persistent user preference  
+✅ **Responsive Layout** for both desktop and mobile  
+
+---
+
+## ⚙️ Installation & Running Locally
+
+```bash
+# Clone the repo
+git clone https://github.com/Richard-Raph/kaihma.git
+
+cd kaihma
+
+# Install dependencies
+npm install
+
+# Run the app
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Then open your browser to:
 ```
+http://localhost:5173
+```
+
+---
+
+## 🧭 API Reference
+
+- **Base URL:** `https://restcountries.com/v3.1`  
+- **Endpoints Used:**
+  - `/all?fields={FIELDS}`
+  - `/name/{country}`
+  - `/alpha/{code}`
+  - `/alpha?codes={codeList}`
+
+Only required fields are fetched to optimize performance.
+
+---
+
+## ⚖️ Trade-offs and Design Decisions
+
+| Decision | Trade-off | Rationale |
+|-----------|------------|-----------|
+| **Client-side pagination** | Initial load still fetches all countries | REST Countries API doesn’t support pagination; handled on client. |
+| **Leaflet for map** | Slight bundle size increase | Provides a polished, interactive map experience. |
+| **TailwindCSS** | Utility classes can clutter JSX | Faster to build and iterate with consistent design. |
+| **In-memory caching (no Redux)** | Limited persistence | Enough for a lightweight project within 48-hour scope. |
+| **Dark/Light theme in localStorage** | Simple toggle logic | Maintains user preference seamlessly. |
+
+---
+
+## 🧑‍💻 Author
+
+**Richard Raphael**  
+Frontend & Backend Developer | Web Dev Instructor | App Developer  
+📧 arm.techtonic@gmail.com  
+🔗 [GitHub](https://github.com/Richard-Raph)  
+🔗 [LinkedIn](https://www.linkedin.com/in/rich-tech123)
