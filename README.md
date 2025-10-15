@@ -72,9 +72,9 @@ Data caching for previously fetched country details is implemented to minimize r
 
 ```bash
 # Clone the repo
-git clone https://github.com/Richard-Raph/kaihma.git
+git clone https://github.com/Richard-Raph/interstellar.git
 
-cd kaihma
+cd interstellar
 
 # Install dependencies
 npm install
